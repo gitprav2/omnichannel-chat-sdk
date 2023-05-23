@@ -11,13 +11,17 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
     test('ChatSDK.initialize() should fetch the live chat configuration', async ({ page }) => {
         await page.goto(testPage);
 
-        const [request, response, runtimeContext] = await Promise.all([
+        const [timetakenStart, request, response, timetakenEnd, runtimeContext] = await Promise.all([
+
+            performance.mark("livechatconfig_Start"),
             page.waitForRequest(request => {
                 return request.url().includes(OmnichannelEndpoints.LiveChatConfigPath);
             }),
             page.waitForResponse(response => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatConfigPath);
             }),
+
+            performance.mark("livechatconfig_End"),
             await page.evaluate(async ({ omnichannelConfig }) => {
                 const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
                 const chatSDK = new OmnichannelChatSDK.default(omnichannelConfig);
@@ -31,6 +35,9 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
                 return runtimeContext;
             }, { omnichannelConfig })
         ]);
+
+        let timetaken = performance.measure("livechatconfig", "livechatconfig_Start", "livechatconfig_End");
+        console.log("livechatconfig: " + timetaken.duration);
 
         const { requestId } = runtimeContext;
         const requestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatConfigPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}?requestId=${requestId}&channelId=lcw`;

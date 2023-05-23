@@ -14,7 +14,7 @@ test.describe('UnauthenticatedChat @UnauthenticatedChatWithChatReconnect', () =>
             reconnectId: "id"
         };
 
-        const [chatTokenRequest, chatTokenResponse, sessionInitRequest, sessionInitResponse, reconnectRequest, reconnectResponse, runtimeContext] = await Promise.all([
+        const [chatTokenRequest, chatTokenResponse, sessionInitRequest, sessionInitResponse, timetakenStart, reconnectRequest, reconnectResponse, timetakenEnd, runtimeContext] = await Promise.all([
             page.waitForRequest(request => {
                 return request.url().includes(OmnichannelEndpoints.LiveChatv2GetChatTokenPath);
             }),
@@ -27,12 +27,17 @@ test.describe('UnauthenticatedChat @UnauthenticatedChatWithChatReconnect', () =>
             page.waitForResponse(response => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatSessionInitPath);
             }),
+
+            performance.mark("LiveChatReconnect_Start"),
+
             page.waitForRequest(request => {
                 return request.url().includes(OmnichannelEndpoints.LiveChatReConnect);
             }),
             page.waitForResponse(response => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatReConnect);
             }),
+
+            performance.mark("LiveChatReconnect_End"),
             await page.evaluate(async ({ omnichannelConfig, params }) => {
                 const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
                 const chatSDKConfig = {
@@ -59,6 +64,9 @@ test.describe('UnauthenticatedChat @UnauthenticatedChatWithChatReconnect', () =>
                 return runtimeContext;
             }, { omnichannelConfig, params })
         ]);
+
+        const timetaken = performance.measure("LiveChatReconnect", "LiveChatReconnect_Start", "LiveChatReconnect_End");
+        console.log("livechatreconnect: "+timetaken.duration);
 
         const { reconnectId, redirectURL, requestId } = runtimeContext;
         const chatTokenRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatv2GetChatTokenPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
