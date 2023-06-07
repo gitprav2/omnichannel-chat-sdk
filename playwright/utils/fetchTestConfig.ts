@@ -12,12 +12,16 @@ const fetchTestConfig = () => {
     let testConfig = null;
     try {
         const fileData = fs.readFileSync(testConfigFilePath, 'utf8');
+        console.log(fileData);
         testConfig = YAML.parse(fileData);
+        console.log(testConfig)
     } catch {
+        console.log("Catch Block Start")
         throw new Error(`Unable to process test config file ${testConfigFilePath}`);
     }
 
     if (!testConfig) {
+        console.log("File is empty")
         throw new Error('Test config file is empty');
     }
 
