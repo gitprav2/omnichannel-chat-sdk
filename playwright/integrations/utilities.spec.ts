@@ -1,5 +1,6 @@
 import fetchTestPageUrl from '../utils/fetchTestPageUrl';
 import { test, expect } from '@playwright/test';
+import platform, { isBrowser } from '../../src/utils/platform';
 
 const testPage = fetchTestPageUrl();
 
@@ -10,7 +11,7 @@ test.describe('Utilities @Utilities', () => {
         expect(platform.isBrowser()).toBe(false);
 
     });
-    
+
     test('WebUtils.loadScript() should add the script in the DOM', async ({ page }) => {
         await page.goto(testPage);
 
