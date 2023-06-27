@@ -4,6 +4,13 @@ import { test, expect } from '@playwright/test';
 const testPage = fetchTestPageUrl();
 
 test.describe('Utilities @Utilities', () => {
+
+    test.afterAll(({ }) => {
+
+        expect(platform.isBrowser()).toBe(false);
+
+    });
+    
     test('WebUtils.loadScript() should add the script in the DOM', async ({ page }) => {
         await page.goto(testPage);
 
