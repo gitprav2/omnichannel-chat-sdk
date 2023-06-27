@@ -8,9 +8,9 @@ const globalSetup = (config: FullConfig) => {
     }
 
     // Use test server instead of static page to run tests if set
-    // if (config._webServers.length > 0) {
-    //     process.env.testServer = config._webServers[0].url;
-    // }
+    if (config._webServers.length > 0) {
+        process.env.testServer = config._webServers[0].url;
+    }
 }
 
 export default globalSetup;

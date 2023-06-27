@@ -8,13 +8,13 @@ const fetchTestConfig = () => {
     }
 
     const testConfigFilePath = path.join(path.dirname(__dirname), 'test.config.sample.yml');
-    console.log(testConfigFilePath);
+    // console.log(testConfigFilePath);
     let testConfig = null;
     try {
         const fileData = fs.readFileSync(testConfigFilePath, 'utf8');
-        console.log(fileData);
+        // console.log(fileData);
         testConfig = YAML.parse(fileData);
-        console.log(testConfig)
+        // console.log(testConfig)
     } catch {
         console.log("Catch Block Start")
         throw new Error(`Unable to process test config file ${testConfigFilePath}`);
